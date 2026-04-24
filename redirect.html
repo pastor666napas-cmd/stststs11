@@ -3,76 +3,109 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Переадресация...</title>
+<title>Redirect</title>
 
 <style>
 body{
   margin:0;
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:#02070b;
-  color:#00eaff;
+  background:#05070c;
+  color:white;
   font-family:Arial;
+  height:100vh;
+  overflow:hidden;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  transition:0.6s ease;
+}
+
+.box{
+  text-align:center;
+  transform:translateY(0px);
+  opacity:1;
+  transition:0.6s ease;
 }
 
 .loader{
-  text-align:center;
-}
-
-.spinner{
-  width:60px;
-  height:60px;
-  border:3px solid rgba(0,234,255,0.2);
-  border-top:3px solid #00eaff;
+  width:42px;
+  height:42px;
   border-radius:50%;
-  animation:spin 1s linear infinite;
+  border:3px solid rgba(255,255,255,0.1);
+  border-top:3px solid #00eaff;
   margin:0 auto 20px;
+  animation:spin 1s linear infinite;
 }
 
 @keyframes spin{
-  0%{transform:rotate(0)}
-  100%{transform:rotate(360deg)}
+  to{transform:rotate(360deg)}
+}
+
+.text{
+  font-size:15px;
+  opacity:0.8;
+  letter-spacing:0.03em;
+}
+
+.small{
+  font-size:12px;
+  opacity:0.5;
+  margin-top:8px;
+}
+
+.btn{
+  margin-top:18px;
+  padding:12px 18px;
+  border-radius:10px;
+  border:1px solid #00eaff;
+  background:transparent;
+  color:white;
+  cursor:pointer;
+}
+
+/* эффект "уход вниз" */
+.down {
+  transform:translateY(80px);
+  opacity:0;
+  filter:blur(2px);
 }
 </style>
 </head>
 
 <body>
 
-<div class="loader">
-  <div class="spinner"></div>
-  <div id="text">Проверка ссылки...</div>
+<div class="box" id="box">
+  <div class="loader"></div>
+  <div class="text">Переход в Telegram...</div>
+  <div class="small">Автоматическое перенаправление</div>
+
+  <button class="btn" id="open">Открыть вручную</button>
 </div>
 
 <script>
-function isValid(url){
-  try{
-    const u = new URL(url);
-    return u.protocol === "https:" || u.protocol === "http:";
-  }catch(e){
-    return false;
+const params = new URLSearchParams(location.search);
+const url = params.get("go");
+
+const box = document.getElementById("box");
+
+/* кнопка */
+document.getElementById("open").onclick = ()=>{
+  if(url) location.href = url;
+};
+
+/* 🔥 эффект ухода вниз */
+setTimeout(()=>{
+  box.classList.add("down");
+  window.scrollTo({top:200, behavior:"smooth"});
+}, 900);
+
+/* ⚡ переход */
+setTimeout(()=>{
+  if(url){
+    window.location.replace(url);
   }
-}
-
-const params = new URLSearchParams(window.location.search);
-const target = params.get("go");
-
-if(!target){
-  document.getElementById("text").innerText = "Ошибка ссылки";
-}else{
-  const decoded = decodeURIComponent(target);
-
-  if(!isValid(decoded)){
-    document.getElementById("text").innerText = "Ссылка заблокирована";
-  }else{
-    document.getElementById("text").innerText = "Переадресация...";
-
-    setTimeout(()=>{
-      window.location.replace(decoded);
-    }, 1000);
-  }
-}
+}, 1900);
 </script>
 
 </body>

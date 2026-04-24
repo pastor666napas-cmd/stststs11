@@ -8,204 +8,187 @@
 <style>
 :root{
   --accent:#00eaff;
-  --accent2:#7cf7d4;
-  --bg:#02070b;
+  --bg:#05070c;
 }
 
-*{margin:0;padding:0;box-sizing:border-box}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  -webkit-tap-highlight-color: transparent;
+}
 
 html,body{
   height:100%;
-  height:100dvh;
-}
-
-body{
-  min-height:100dvh;
-  font-family:Arial, sans-serif;
   background:var(--bg);
-  color:white;
   overflow-x:hidden;
+  font-family:Arial, sans-serif;
+  color:white;
 }
 
-/* 🌫 SMOKE */
-#smokeCanvas{
+/* 🌌 BACKGROUND */
+#bg3d{
   position:fixed;
   inset:0;
-  width:100%;
-  height:100%;
   z-index:0;
-  pointer-events:none;
-  opacity:0.6;
 }
 
-/* 🌌 AURA */
+.grid{
+  position:fixed;
+  inset:0;
+  background:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size:60px 60px;
+  opacity:0.12;
+  z-index:1;
+}
+
 body::before{
   content:"";
   position:fixed;
   inset:0;
   background:
-    radial-gradient(circle at 25% 20%, rgba(0,234,255,0.22), transparent 45%),
-    radial-gradient(circle at 75% 40%, rgba(124,247,212,0.12), transparent 50%),
-    radial-gradient(circle at 50% 85%, rgba(0,234,255,0.10), transparent 55%);
-  filter:blur(90px);
-  animation:aura 18s ease-in-out infinite;
-  z-index:0;
-}
-
-@keyframes aura{
-  0%{transform:scale(1)}
-  50%{transform:scale(1.05)}
-  100%{transform:scale(1)}
-}
-
-/* NOISE */
-.noise{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  opacity:0.05;
-  background-image:url("https://www.transparenttextures.com/patterns/noise.png");
-  mix-blend-mode:overlay;
+    radial-gradient(circle at 25% 20%, rgba(0,234,255,0.18), transparent 45%),
+    radial-gradient(circle at 80% 60%, rgba(255,70,0,0.10), transparent 50%);
+  filter:blur(100px);
   z-index:1;
 }
 
-/* LOGO */
+/* 🔥 CURSOR (gun + follower restored) */
+.cursor{
+  position:fixed;
+  width:28px;
+  height:28px;
+  border:2px solid var(--accent);
+  border-radius:50%;
+  pointer-events:none;
+  z-index:9999;
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 18px rgba(0,234,255,0.5);
+}
+
+.cursor::after{
+  content:"";
+  position:absolute;
+  inset:6px;
+  border:1px solid rgba(0,234,255,0.6);
+  border-radius:50%;
+}
+
+.follower{
+  position:fixed;
+  width:44px;
+  height:44px;
+  border:1px solid rgba(0,234,255,0.25);
+  border-radius:50%;
+  pointer-events:none;
+  z-index:9998;
+  transform:translate(-50%,-50%);
+}
+
+/* 📱 hide cursor on mobile */
+@media (pointer:coarse){
+  .cursor,.follower{display:none;}
+}
+
+/* 🧠 LOGO */
 .logo-wrap{
-  width:100%;
-  max-width:420px;
-  margin:25px auto 10px;
+  max-width:340px;
+  margin:18px auto 10px;
   position:relative;
-  z-index:2;
+  z-index:5;
+  animation:float 4s ease-in-out infinite;
 }
 
 .logo{
   width:100%;
-  filter:drop-shadow(0 0 35px rgba(0,234,255,0.5));
+  filter:drop-shadow(0 0 35px rgba(0,234,255,0.35));
+  animation:breath 3s ease-in-out infinite;
 }
 
-/* CARDS */
+@keyframes breath{
+  0%,100%{transform:scale(1); filter:drop-shadow(0 0 25px rgba(0,234,255,0.25));}
+  50%{transform:scale(1.03); filter:drop-shadow(0 0 50px rgba(255,70,0,0.25));}
+}
+
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-6px)}
+}
+
+/* 🌫 smoke overlay (light) */
+.smoke{
+  position:absolute;
+  inset:0;
+  opacity:0.25;
+  pointer-events:none;
+}
+
+/* 🧊 CARDS */
 .card{
-  margin:12px auto;
-  padding:18px;
-  max-width:460px;
+  margin:10px auto;
+  padding:16px;
+  max-width:440px;
   width:92vw;
-  border-radius:18px;
 
-  background:rgba(255,255,255,0.04);
-  backdrop-filter:blur(24px);
-
-  border:1px solid rgba(0,234,255,0.18);
-
-  box-shadow:
-    0 20px 60px rgba(0,0,0,0.45),
-    inset 0 0 20px rgba(0,234,255,0.05);
+  border-radius:16px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.08);
+  backdrop-filter:blur(18px);
 
   position:relative;
-  z-index:2;
-
-  transition:0.25s;
+  z-index:5;
 }
 
-.card:active{
-  transform:scale(0.98);
-}
-
-/* BUTTONS */
+/* 🔘 BUTTONS */
 .btn{
   width:100%;
-  padding:18px;
+  padding:16px;
   margin-top:10px;
 
-  border-radius:14px;
-  border:1px solid rgba(0,234,255,0.25);
+  border-radius:12px;
+  border:1px solid rgba(0,234,255,0.2);
 
   background:linear-gradient(135deg,
-    rgba(0,234,255,0.18),
-    rgba(124,247,212,0.08),
-    rgba(255,255,255,0.03)
+    rgba(0,234,255,0.12),
+    rgba(0,0,0,0.2)
   );
 
-  color:#eaffff;
+  color:white;
   font-weight:600;
-  letter-spacing:0.08em;
+  letter-spacing:0.06em;
 
   cursor:pointer;
-  position:relative;
-  overflow:hidden;
-
   transition:0.2s;
-  backdrop-filter:blur(10px);
-
-  min-height:48px;
-  font-size:14px;
 }
 
-/* desktop hover only */
-@media (hover:hover){
-  .btn:hover{
-    transform:translateY(-2px);
-    box-shadow:0 0 25px rgba(0,234,255,0.25);
-  }
-
-  .btn::before{
-    content:"";
-    position:absolute;
-    top:0;
-    left:-120%;
-    width:120%;
-    height:100%;
-    background:linear-gradient(120deg,transparent,rgba(255,255,255,0.25),transparent);
-    transition:0.6s;
-  }
-
-  .btn:hover::before{
-    left:120%;
-  }
+.btn:hover{
+  transform:scale(1.02);
+  box-shadow:0 0 25px rgba(0,234,255,0.12);
 }
 
-/* CURSOR (disabled on touch) */
-.cursor,.cursor-follower{
-  position:fixed;
-  pointer-events:none;
-  z-index:9999;
-}
-
-.cursor{
-  width:14px;
-  height:14px;
-  border-radius:50%;
-  background:var(--accent);
-  box-shadow:0 0 20px var(--accent);
-}
-
-.cursor-follower{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  border:1px solid rgba(0,234,255,0.4);
-}
-
-/* hide cursor on touch devices */
-@media (pointer:coarse){
-  .cursor,.cursor-follower{
-    display:none;
-  }
+.btn:active{
+  transform:scale(0.98);
 }
 </style>
 </head>
 
 <body>
 
-<canvas id="smokeCanvas"></canvas>
-<div class="noise"></div>
+<canvas id="bg3d"></canvas>
+<div class="grid"></div>
 
 <div class="cursor" id="cursor"></div>
-<div class="cursor-follower" id="follower"></div>
+<div class="follower" id="follower"></div>
 
+<!-- LOGO -->
 <div class="logo-wrap">
+  <canvas class="smoke" id="smoke"></canvas>
   <img class="logo" src="logo.png" alt="STACHET">
 </div>
 
+<!-- BUTTONS RESTORED -->
 <div class="card">
   <button class="btn" onclick="go('https://t.me/speedcoins24bot')">ОБМЕННИК</button>
 </div>
@@ -233,84 +216,96 @@ body::before{
 
 <script>
 function go(url){
-  window.location.href = "redirect.html?go=" + encodeURIComponent(url);
+  window.location.href="redirect.html?go="+encodeURIComponent(url);
 }
 
-/* disable cursor logic on touch */
-const isTouch = window.matchMedia("(pointer: coarse)").matches;
-
-const cursor = document.getElementById("cursor");
-const follower = document.getElementById("follower");
+/* 🔥 CURSOR */
+const cursor=document.getElementById("cursor");
+const follower=document.getElementById("follower");
 
 let mx=0,my=0,fx=0,fy=0;
 
-if(!isTouch){
 document.addEventListener("mousemove",(e)=>{
   mx=e.clientX;
   my=e.clientY;
 });
 
-function cursorAnim(){
-  cursor.style.transform=`translate(${mx}px,${my}px)`;
+function cursorLoop(){
+  cursor.style.left=mx+"px";
+  cursor.style.top=my+"px";
 
-  fx += (mx-fx)*0.12;
-  fy += (my-fy)*0.12;
+  fx += (mx - fx) * 0.15;
+  fy += (my - fy) * 0.15;
 
-  follower.style.transform=`translate(${fx-20}px,${fy-20}px)`;
+  follower.style.left=fx+"px";
+  follower.style.top=fy+"px";
 
-  requestAnimationFrame(cursorAnim);
+  requestAnimationFrame(cursorLoop);
 }
-cursorAnim();
-}
+cursorLoop();
 
-/* SMOKE OPTIMIZED */
-const canvas = document.getElementById("smokeCanvas");
-const ctx = canvas.getContext("2d");
+/* 🌐 3D LIGHT PARTICLES */
+const c=document.getElementById("bg3d");
+const ctx=c.getContext("2d");
 
-let w,h;
 function resize(){
-  w=canvas.width=innerWidth;
-  h=canvas.height=innerHeight;
+  c.width=innerWidth;
+  c.height=innerHeight;
 }
 resize();
-window.addEventListener("resize",resize);
+addEventListener("resize",resize);
 
-const smokeCount = isTouch ? 20 : 45;
+const p=Array.from({length:60},()=>({
+  x:Math.random()*innerWidth,
+  y:Math.random()*innerHeight,
+  v:(Math.random()-0.5)*0.4
+}));
 
-class Smoke{
-  constructor(){this.reset();}
-  reset(){
-    this.x=Math.random()*w;
-    this.y=h+Math.random()*100;
-    this.size=80+Math.random()*120;
-    this.speed=0.2+Math.random()*0.4;
-    this.alpha=0.02+Math.random()*0.05;
-    this.vx=(Math.random()-0.5)*0.2;
-  }
-  update(){
-    this.x+=this.vx;
-    this.y-=this.speed;
-    if(this.y<-this.size)this.reset();
-  }
-  draw(){
-    const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.size);
-    g.addColorStop(0,`rgba(0,234,255,${this.alpha})`);
-    g.addColorStop(1,"transparent");
-    ctx.fillStyle=g;
+function draw(){
+  ctx.clearRect(0,0,c.width,c.height);
+
+  for(const i of p){
+    i.x+=i.v;
+    i.y+=i.v;
+
+    if(i.x<0)i.x=innerWidth;
+    if(i.y<0)i.y=innerHeight;
+
+    ctx.fillStyle="rgba(0,234,255,0.25)";
     ctx.beginPath();
-    ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+    ctx.arc(i.x,i.y,2,0,Math.PI*2);
     ctx.fill();
   }
-}
 
-const smoke=Array.from({length:smokeCount},()=>new Smoke());
-
-function animate(){
-  ctx.clearRect(0,0,w,h);
-  smoke.forEach(s=>{s.update();s.draw();});
-  requestAnimationFrame(animate);
+  requestAnimationFrame(draw);
 }
-animate();
+draw();
+
+/* 🌫 LOGO SMOKE */
+const s=document.getElementById("smoke");
+const sctx=s.getContext("2d");
+
+function smokeResize(){
+  s.width=340;
+  s.height=160;
+}
+smokeResize();
+
+let t=0;
+function smoke(){
+  sctx.clearRect(0,0,s.width,s.height);
+
+  for(let i=0;i<12;i++){
+    sctx.fillStyle=`rgba(0,234,255,0.05)`;
+    sctx.beginPath();
+    sctx.arc(170+Math.sin(t+i)*15,80-i*2,25,0,Math.PI*2);
+    sctx.fill();
+  }
+
+  t+=0.03;
+  requestAnimationFrame(smoke);
+}
+smoke();
 </script>
 
 </body>
