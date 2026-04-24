@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>STACHET</title>
 
 <style>
@@ -14,16 +14,20 @@
 
 *{margin:0;padding:0;box-sizing:border-box}
 
+html,body{
+  height:100%;
+  height:100dvh;
+}
+
 body{
-  min-height:100vh;
+  min-height:100dvh;
   font-family:Arial, sans-serif;
   background:var(--bg);
   color:white;
   overflow-x:hidden;
-  cursor:none;
 }
 
-/* 🌫 CINEMATIC SMOKE (main effect) */
+/* 🌫 SMOKE */
 #smokeCanvas{
   position:fixed;
   inset:0;
@@ -31,11 +35,10 @@ body{
   height:100%;
   z-index:0;
   pointer-events:none;
-  opacity:0.65;
-  filter:blur(0.2px);
+  opacity:0.6;
 }
 
-/* 🌌 SOFT LIGHT FIELD (NOT geometric, just aura) */
+/* 🌌 AURA */
 body::before{
   content:"";
   position:fixed;
@@ -50,12 +53,12 @@ body::before{
 }
 
 @keyframes aura{
-  0%{transform:scale(1) translate(0,0)}
-  50%{transform:scale(1.05) translate(-2%, -2%)}
-  100%{transform:scale(1) translate(0,0)}
+  0%{transform:scale(1)}
+  50%{transform:scale(1.05)}
+  100%{transform:scale(1)}
 }
 
-/* 🌫 NOISE */
+/* NOISE */
 .noise{
   position:fixed;
   inset:0;
@@ -80,11 +83,12 @@ body::before{
   filter:drop-shadow(0 0 35px rgba(0,234,255,0.5));
 }
 
-/* 🧊 CARDS */
+/* CARDS */
 .card{
   margin:12px auto;
   padding:18px;
   max-width:460px;
+  width:92vw;
   border-radius:18px;
 
   background:rgba(255,255,255,0.04);
@@ -102,19 +106,17 @@ body::before{
   transition:0.25s;
 }
 
-.card:hover{
-  transform:translateY(-5px);
-  box-shadow:0 0 40px rgba(0,234,255,0.12);
+.card:active{
+  transform:scale(0.98);
 }
 
-/* 💎 PREMIUM BUTTONS */
+/* BUTTONS */
 .btn{
   width:100%;
-  padding:16px;
+  padding:18px;
   margin-top:10px;
 
   border-radius:14px;
-
   border:1px solid rgba(0,234,255,0.25);
 
   background:linear-gradient(135deg,
@@ -131,52 +133,63 @@ body::before{
   position:relative;
   overflow:hidden;
 
-  transition:0.25s;
+  transition:0.2s;
   backdrop-filter:blur(10px);
+
+  min-height:48px;
+  font-size:14px;
 }
 
-.btn::before{
-  content:"";
-  position:absolute;
-  top:0;
-  left:-120%;
-  width:120%;
-  height:100%;
-  background:linear-gradient(120deg,transparent,rgba(255,255,255,0.25),transparent);
-  transition:0.6s;
+/* desktop hover only */
+@media (hover:hover){
+  .btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 0 25px rgba(0,234,255,0.25);
+  }
+
+  .btn::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-120%;
+    width:120%;
+    height:100%;
+    background:linear-gradient(120deg,transparent,rgba(255,255,255,0.25),transparent);
+    transition:0.6s;
+  }
+
+  .btn:hover::before{
+    left:120%;
+  }
 }
 
-.btn:hover::before{
-  left:120%;
-}
-
-.btn:hover{
-  transform:translateY(-2px);
-  box-shadow:
-    0 0 25px rgba(0,234,255,0.25),
-    0 0 60px rgba(124,247,212,0.08);
-}
-
-/* 🖱 CURSOR */
-.cursor{
+/* CURSOR (disabled on touch) */
+.cursor,.cursor-follower{
   position:fixed;
+  pointer-events:none;
+  z-index:9999;
+}
+
+.cursor{
   width:14px;
   height:14px;
   border-radius:50%;
   background:var(--accent);
   box-shadow:0 0 20px var(--accent);
-  pointer-events:none;
-  z-index:9999;
 }
 
 .cursor-follower{
-  position:fixed;
   width:40px;
   height:40px;
   border-radius:50%;
   border:1px solid rgba(0,234,255,0.4);
-  pointer-events:none;
-  z-index:9998;
+}
+
+/* hide cursor on touch devices */
+@media (pointer:coarse){
+  .cursor,.cursor-follower{
+    display:none;
+  }
 }
 </style>
 </head>
@@ -192,8 +205,6 @@ body::before{
 <div class="logo-wrap">
   <img class="logo" src="logo.png" alt="STACHET">
 </div>
-
-<!-- 🔘 ВСЕ КНОПКИ ВОЗВРАЩЕНЫ -->
 
 <div class="card">
   <button class="btn" onclick="go('https://t.me/speedcoins24bot')">ОБМЕННИК</button>
@@ -225,12 +236,15 @@ function go(url){
   window.location.href = "redirect.html?go=" + encodeURIComponent(url);
 }
 
-/* 🖱 CURSOR PHYSICS */
+/* disable cursor logic on touch */
+const isTouch = window.matchMedia("(pointer: coarse)").matches;
+
 const cursor = document.getElementById("cursor");
 const follower = document.getElementById("follower");
 
 let mx=0,my=0,fx=0,fy=0;
 
+if(!isTouch){
 document.addEventListener("mousemove",(e)=>{
   mx=e.clientX;
   my=e.clientY;
@@ -247,8 +261,9 @@ function cursorAnim(){
   requestAnimationFrame(cursorAnim);
 }
 cursorAnim();
+}
 
-/* 🌫 CINEMATIC SMOKE (NO GEOMETRY, ONLY CLOUDS) */
+/* SMOKE OPTIMIZED */
 const canvas = document.getElementById("smokeCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -257,18 +272,20 @@ function resize(){
   w=canvas.width=innerWidth;
   h=canvas.height=innerHeight;
 }
-window.addEventListener("resize",resize);
 resize();
+window.addEventListener("resize",resize);
+
+const smokeCount = isTouch ? 20 : 45;
 
 class Smoke{
   constructor(){this.reset();}
   reset(){
     this.x=Math.random()*w;
     this.y=h+Math.random()*100;
-    this.size=100+Math.random()*150;
-    this.speed=0.2+Math.random()*0.5;
-    this.alpha=0.03+Math.random()*0.06;
-    this.vx=(Math.random()-0.5)*0.3;
+    this.size=80+Math.random()*120;
+    this.speed=0.2+Math.random()*0.4;
+    this.alpha=0.02+Math.random()*0.05;
+    this.vx=(Math.random()-0.5)*0.2;
   }
   update(){
     this.x+=this.vx;
@@ -286,7 +303,7 @@ class Smoke{
   }
 }
 
-const smoke=Array.from({length:45},()=>new Smoke());
+const smoke=Array.from({length:smokeCount},()=>new Smoke());
 
 function animate(){
   ctx.clearRect(0,0,w,h);
