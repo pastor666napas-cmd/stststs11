@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STACHET</title>
+
+<style>
+:root{
+  --accent:#00eaff;
+  --accent2:#7cf7d4;
+  --bg:#02070b;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  min-height:100vh;
+  font-family:Arial, sans-serif;
+  background:var(--bg);
+  color:white;
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* 🌫 CINEMATIC SMOKE (main effect) */
+#smokeCanvas{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:0;
+  pointer-events:none;
+  opacity:0.65;
+  filter:blur(0.2px);
+}
+
+/* 🌌 SOFT LIGHT FIELD (NOT geometric, just aura) */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at 25% 20%, rgba(0,234,255,0.22), transparent 45%),
+    radial-gradient(circle at 75% 40%, rgba(124,247,212,0.12), transparent 50%),
+    radial-gradient(circle at 50% 85%, rgba(0,234,255,0.10), transparent 55%);
+  filter:blur(90px);
+  animation:aura 18s ease-in-out infinite;
+  z-index:0;
+}
+
+@keyframes aura{
+  0%{transform:scale(1) translate(0,0)}
+  50%{transform:scale(1.05) translate(-2%, -2%)}
+  100%{transform:scale(1) translate(0,0)}
+}
+
+/* 🌫 NOISE */
+.noise{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:0.05;
+  background-image:url("https://www.transparenttextures.com/patterns/noise.png");
+  mix-blend-mode:overlay;
+  z-index:1;
+}
+
+/* LOGO */
+.logo-wrap{
+  width:100%;
+  max-width:420px;
+  margin:25px auto 10px;
+  position:relative;
+  z-index:2;
+}
+
+.logo{
+  width:100%;
+  filter:drop-shadow(0 0 35px rgba(0,234,255,0.5));
+}
+
+/* 🧊 CARDS */
+.card{
+  margin:12px auto;
+  padding:18px;
+  max-width:460px;
+  border-radius:18px;
+
+  background:rgba(255,255,255,0.04);
+  backdrop-filter:blur(24px);
+
+  border:1px solid rgba(0,234,255,0.18);
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.45),
+    inset 0 0 20px rgba(0,234,255,0.05);
+
+  position:relative;
+  z-index:2;
+
+  transition:0.25s;
+}
+
+.card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 0 40px rgba(0,234,255,0.12);
+}
+
+/* 💎 PREMIUM BUTTONS */
+.btn{
+  width:100%;
+  padding:16px;
+  margin-top:10px;
+
+  border-radius:14px;
+
+  border:1px solid rgba(0,234,255,0.25);
+
+  background:linear-gradient(135deg,
+    rgba(0,234,255,0.18),
+    rgba(124,247,212,0.08),
+    rgba(255,255,255,0.03)
+  );
+
+  color:#eaffff;
+  font-weight:600;
+  letter-spacing:0.08em;
+
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+
+  transition:0.25s;
+  backdrop-filter:blur(10px);
+}
+
+.btn::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:-120%;
+  width:120%;
+  height:100%;
+  background:linear-gradient(120deg,transparent,rgba(255,255,255,0.25),transparent);
+  transition:0.6s;
+}
+
+.btn:hover::before{
+  left:120%;
+}
+
+.btn:hover{
+  transform:translateY(-2px);
+  box-shadow:
+    0 0 25px rgba(0,234,255,0.25),
+    0 0 60px rgba(124,247,212,0.08);
+}
+
+/* 🖱 CURSOR */
+.cursor{
+  position:fixed;
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 20px var(--accent);
+  pointer-events:none;
+  z-index:9999;
+}
+
+.cursor-follower{
+  position:fixed;
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  border:1px solid rgba(0,234,255,0.4);
+  pointer-events:none;
+  z-index:9998;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="smokeCanvas"></canvas>
+<div class="noise"></div>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="follower"></div>
+
+<div class="logo-wrap">
+  <img class="logo" src="logo.png" alt="STACHET">
+</div>
+
+<!-- 🔘 ВСЕ КНОПКИ ВОЗВРАЩЕНЫ -->
+
+<div class="card">
+  <button class="btn" onclick="go('https://t.me/speedcoins24bot')">ОБМЕННИК</button>
+</div>
+
+<div class="card">
+  <button class="btn" onclick="go('https://t.me/admstachet')">ОПЕРАТОР</button>
+</div>
+
+<div class="card">
+  <button class="btn" onclick="go('https://t.me/stacetbot')">БОТ 1</button>
+  <button class="btn" onclick="go('https://t.me/stachet24bot')">БОТ 2</button>
+</div>
+
+<div class="card">
+  <button class="btn" onclick="go('https://t.me/+TAABznuL11IzYmEy')">ЧАТ</button>
+</div>
+
+<div class="card">
+  <button class="btn" onclick="go('https://t.me/+ewhxh7eu5Vc3YTA0')">КАНАЛ</button>
+</div>
+
+<div class="card">
+  <button class="btn" onclick="go('https://telegra.ph/STACHET-CONTACTS-01-15')">КОНТАКТЫ</button>
+</div>
+
+<script>
+function go(url){
+  window.location.href = "redirect.html?go=" + encodeURIComponent(url);
+}
+
+/* 🖱 CURSOR PHYSICS */
+const cursor = document.getElementById("cursor");
+const follower = document.getElementById("follower");
+
+let mx=0,my=0,fx=0,fy=0;
+
+document.addEventListener("mousemove",(e)=>{
+  mx=e.clientX;
+  my=e.clientY;
+});
+
+function cursorAnim(){
+  cursor.style.transform=`translate(${mx}px,${my}px)`;
+
+  fx += (mx-fx)*0.12;
+  fy += (my-fy)*0.12;
+
+  follower.style.transform=`translate(${fx-20}px,${fy-20}px)`;
+
+  requestAnimationFrame(cursorAnim);
+}
+cursorAnim();
+
+/* 🌫 CINEMATIC SMOKE (NO GEOMETRY, ONLY CLOUDS) */
+const canvas = document.getElementById("smokeCanvas");
+const ctx = canvas.getContext("2d");
+
+let w,h;
+function resize(){
+  w=canvas.width=innerWidth;
+  h=canvas.height=innerHeight;
+}
+window.addEventListener("resize",resize);
+resize();
+
+class Smoke{
+  constructor(){this.reset();}
+  reset(){
+    this.x=Math.random()*w;
+    this.y=h+Math.random()*100;
+    this.size=100+Math.random()*150;
+    this.speed=0.2+Math.random()*0.5;
+    this.alpha=0.03+Math.random()*0.06;
+    this.vx=(Math.random()-0.5)*0.3;
+  }
+  update(){
+    this.x+=this.vx;
+    this.y-=this.speed;
+    if(this.y<-this.size)this.reset();
+  }
+  draw(){
+    const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.size);
+    g.addColorStop(0,`rgba(0,234,255,${this.alpha})`);
+    g.addColorStop(1,"transparent");
+    ctx.fillStyle=g;
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+    ctx.fill();
+  }
+}
+
+const smoke=Array.from({length:45},()=>new Smoke());
+
+function animate(){
+  ctx.clearRect(0,0,w,h);
+  smoke.forEach(s=>{s.update();s.draw();});
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+</body>
+</html>

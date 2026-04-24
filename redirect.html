@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Переадресация...</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#02070b;
+  color:#00eaff;
+  font-family:Arial;
+}
+
+.loader{
+  text-align:center;
+}
+
+.spinner{
+  width:60px;
+  height:60px;
+  border:3px solid rgba(0,234,255,0.2);
+  border-top:3px solid #00eaff;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  margin:0 auto 20px;
+}
+
+@keyframes spin{
+  0%{transform:rotate(0)}
+  100%{transform:rotate(360deg)}
+}
+</style>
+</head>
+
+<body>
+
+<div class="loader">
+  <div class="spinner"></div>
+  <div id="text">Проверка ссылки...</div>
+</div>
+
+<script>
+function isValid(url){
+  try{
+    const u = new URL(url);
+    return u.protocol === "https:" || u.protocol === "http:";
+  }catch(e){
+    return false;
+  }
+}
+
+const params = new URLSearchParams(window.location.search);
+const target = params.get("go");
+
+if(!target){
+  document.getElementById("text").innerText = "Ошибка ссылки";
+}else{
+  const decoded = decodeURIComponent(target);
+
+  if(!isValid(decoded)){
+    document.getElementById("text").innerText = "Ссылка заблокирована";
+  }else{
+    document.getElementById("text").innerText = "Переадресация...";
+
+    setTimeout(()=>{
+      window.location.replace(decoded);
+    }, 1000);
+  }
+}
+</script>
+
+</body>
+</html>
